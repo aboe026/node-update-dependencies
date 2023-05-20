@@ -1,0 +1,12 @@
+node_modules
+
+.env
+.pnp.*
+.vscode
+.yarn
+build
+coverage
+test-results
+tsconfig.tsbuildinfo
+
+test/e2e/.temp-work-dir
