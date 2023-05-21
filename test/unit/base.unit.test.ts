@@ -1,4 +1,5 @@
 import fs from 'fs/promises'
+import os from 'os'
 
 import Base, { PackageJson } from '../../src/base'
 import Option from '../../src/option'
@@ -194,29 +195,31 @@ describe('Base', () => {
   })
 
   describe('getPackageJsonFilePath', () => {
+    const isWindows = os.platform() === 'win32'
+    const fileSeparator = isWindows ? '\\' : '/'
     it('returns file name if directory empty', () => {
       expect(Base.getPackageJsonFilePath('')).toEqual('package.json')
     })
     it('returns file path if Unix root directory provided', () => {
-      expect(Base.getPackageJsonFilePath('/')).toEqual('\\package.json')
+      expect(Base.getPackageJsonFilePath('/')).toEqual(`${fileSeparator}package.json`)
     })
     it('returns file path if Windows root directory provided', () => {
-      expect(Base.getPackageJsonFilePath('C:\\')).toEqual('C:\\package.json')
+      expect(Base.getPackageJsonFilePath('C:\\')).toEqual(`C:\\${isWindows ? '' : '/'}package.json`)
     })
     it('returns file path if Unix nested directory provided', () => {
-      expect(Base.getPackageJsonFilePath('/project')).toEqual('\\project\\package.json')
+      expect(Base.getPackageJsonFilePath('/project')).toEqual(`${fileSeparator}project${fileSeparator}package.json`)
     })
     it('returns file path if Windows nested directory provided', () => {
-      expect(Base.getPackageJsonFilePath('C:\\project')).toEqual('C:\\project\\package.json')
+      expect(Base.getPackageJsonFilePath('C:\\project')).toEqual(`C:\\project\\${isWindows ? '' : '/'}package.json`)
     })
     it('returns file path if Unix deeply nested directory provided', () => {
       expect(Base.getPackageJsonFilePath('/user/john/repos/project')).toEqual(
-        '\\user\\john\\repos\\project\\package.json'
+        `${fileSeparator}user${fileSeparator}john${fileSeparator}repos${fileSeparator}project${fileSeparator}package.json`
       )
     })
     it('returns file path if Windows deeply nested directory provided', () => {
       expect(Base.getPackageJsonFilePath('C:\\Users\\john\\repos\\project')).toEqual(
-        'C:\\Users\\john\\repos\\project\\package.json'
+        `C:\\Users\\john\\repos\\project${isWindows ? '' : '/'}package.json`
       )
     })
   })

@@ -40,7 +40,7 @@ node {
                         }
                         stage('Unit Test') {
                             try {
-                                sh 'yarn test-unit'
+                                sh 'yarn test-unit-ci'
                             } catch (err) {
                                 exceptionThrown = true
                                 println 'Exception was caught in try block of unit tests stage.'
@@ -66,7 +66,7 @@ node {
                         }
                         stage('E2E Test') {
                             try {
-                                sh 'yarn test-e2e'
+                                sh 'yarn test-e2e-ci'
                             } catch (err) {
                                 exceptionThrown = true
                                 println 'Exception was caught in try block of e2e tests stage.'
