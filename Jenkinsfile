@@ -35,7 +35,7 @@ node {
                         parallel(
                             'groovy': {
                                 stage('Lint Groovy') {
-                                    sh 'yarn lint-groovy'
+                                    sh 'yarn lint-groovy --noserver'
                                 }
                             },
                             'node': {
