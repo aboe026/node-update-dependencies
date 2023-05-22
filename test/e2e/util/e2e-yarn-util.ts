@@ -60,7 +60,7 @@ export async function testYarn({
   }
 
   await executeAsync({
-    command: 'yarn install',
+    command: 'yarn install --no-immutable', // added --no-immutable so does not throw error in CI
     options: {
       cwd: directory,
     },
