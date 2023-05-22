@@ -210,7 +210,7 @@ describe('Base', () => {
       expect(Base.getPackageJsonFilePath('/project')).toEqual(`${fileSeparator}project${fileSeparator}package.json`)
     })
     it('returns file path if Windows nested directory provided', () => {
-      expect(Base.getPackageJsonFilePath('C:\\project')).toEqual(`C:\\project\\${isWindows ? '' : '/'}package.json`)
+      expect(Base.getPackageJsonFilePath('C:\\project')).toEqual(`C:\\project${fileSeparator}package.json`)
     })
     it('returns file path if Unix deeply nested directory provided', () => {
       expect(Base.getPackageJsonFilePath('/user/john/repos/project')).toEqual(
