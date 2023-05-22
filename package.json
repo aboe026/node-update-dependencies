@@ -26,6 +26,7 @@
     "lint-fix": "npm-run-all lint-node-fix lint-groovy-fix",
     "lint-groovy": "npm-groovy-lint --ignorepattern '**/node_modules/**' --failon info",
     "lint-groovy-fix": "yarn lint-groovy --fix",
+    "lint-groovy-version": "npm-groovy-lint --version",
     "lint-node": "eslint . && prettier --check .",
     "lint-node-fix": "eslint --fix . && prettier --write .",
     "run-built": "node executable.js",
