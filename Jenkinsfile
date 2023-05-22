@@ -34,9 +34,6 @@ node {
                         }
                         parallel(
                             'groovy': {
-                                stage('Install Java') {
-                                    sh 'yarn lint-groovy-version'
-                                }
                                 stage('Lint Groovy') {
                                     sh 'yarn lint-groovy'
                                 }
