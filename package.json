@@ -32,7 +32,7 @@
     "start": "ts-node src/index.ts",
     "test": "yarn lint && yarn test-unit && yarn test-e2e",
     "test-e2e": "jest test/e2e --config=jest.config.e2e.ts",
-    "test-e2e-ci": "cross-env TEST_RESULT_NAME=e2e yarn test-e2e -t 'Yarn multiple workspaces regular and regular does not update if root or other workspace do not have updates'",
+    "test-e2e-ci": "cross-env TEST_RESULT_NAME=e2e yarn test-e2e",
     "test-unit": "jest test/unit --config=jest.config.ts",
     "test-unit-ci": "cross-env TEST_RESULT_NAME=unit yarn test-unit",
     "watch": "yarn build --watch"

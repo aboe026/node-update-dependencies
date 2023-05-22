@@ -23,7 +23,6 @@ export async function testYarn({
   expectedInstall: boolean
 }): Promise<void> {
   const directory = E2eTests[getTestName()].directory
-  console.log(`TEST directory: '${directory}'`)
   const packageLockPath = path.join(directory, 'yarn.lock')
   await fs.writeFile(packageLockPath, '')
   await fs.writeFile(path.join(directory, '.yarnrc.yml'), 'enableImmutableInstalls: false') // so does not throw error in CI
