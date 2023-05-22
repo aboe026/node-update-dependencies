@@ -23,8 +23,10 @@ export async function testYarn({
   expectedInstall: boolean
 }): Promise<void> {
   const directory = E2eTests[getTestName()].directory
+  console.log(`TEST directory: '${directory}'`)
   const packageLockPath = path.join(directory, 'yarn.lock')
   await fs.writeFile(packageLockPath, '')
+  await fs.writeFile(path.join(directory, '.yarnrc.yml'), 'enableImmutableInstalls: false') // so does not throw error in CI
   for (const workspace of workspaces) {
     const packageName = `${workspace.name}-${E2eTests[getTestName()].id}`
     const workspaceDir = path.join(directory, workspace.location)
@@ -60,7 +62,7 @@ export async function testYarn({
   }
 
   await executeAsync({
-    command: 'yarn install --no-immutable', // added --no-immutable so does not throw error in CI
+    command: 'yarn install',
     options: {
       cwd: directory,
     },
