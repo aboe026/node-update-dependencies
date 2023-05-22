@@ -11,7 +11,7 @@ node {
     def packageJson
 
     try {
-        timeout(time: 10, unit: 'MINUTES') {
+        timeout(time: 20, unit: 'MINUTES') {
             ansiColor('xterm') {
                 dir(workDir) {
                     stage('Prep') {
@@ -34,6 +34,9 @@ node {
                         }
                         parallel(
                             'groovy': {
+                                stage('Install Java') {
+                                    sh 'yarn dlx npm-groovy-lint --version'
+                                }
                                 stage('Lint Groovy') {
                                     sh 'yarn lint-groovy'
                                 }
