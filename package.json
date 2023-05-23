@@ -24,7 +24,7 @@
     "coverage-view": "ts-node scripts/view-coverage.ts coverage/lcov-report/index.html",
     "lint": "npm-run-all lint-node lint-groovy",
     "lint-fix": "npm-run-all lint-node-fix lint-groovy-fix",
-    "lint-groovy": "npm-groovy-lint --noserver --ignorepattern '**/node_modules/**' --failon info",
+    "lint-groovy": "npm-groovy-lint --noserver --failon info --ignorepattern '**/node_modules/**' Jenkinsfile",
     "lint-groovy-fix": "yarn lint-groovy --fix",
     "lint-node": "eslint . && prettier --check .",
     "lint-node-fix": "eslint --fix . && prettier --write .",
