@@ -32,58 +32,49 @@ node {
                             sh 'yarn --version'
                             sh 'yarn install --immutable'
                         }
-                        parallel(
-                            'groovy': {
-                                stage('Lint Groovy') {
-                                    sh 'yarn lint-groovy --noserver'
-                                }
-                            },
-                            'node': {
-                                stage('Lint Node') {
-                                    sh 'yarn lint-node'
-                                }
-                                stage('Build') {
-                                    sh 'yarn build'
-                                }
-                                stage('Unit Test') {
-                                    try {
-                                        sh 'yarn test-unit-ci'
-                                    } catch (err) {
-                                        exceptionThrown = true
-                                        println 'Exception was caught in try block of unit tests stage.'
-                                        println err
-                                    } finally {
-                                        junit testResults: 'test-results/unit.xml', allowEmptyResults: true
-                                        recordCoverage(
-                                            skipPublishingChecks: true,
-                                            sourceCodeRetention: 'EVERY_BUILD',
-                                            tools: [
-                                                [
-                                                    parser: 'COBERTURA',
-                                                    pattern: 'coverage/cobertura-coverage.xml'
-                                                ]
-                                            ]
-                                        )
-                                        if (upload) {
-                                            badges.uploadCoverageResult(
-                                                branch: env.BRANCH_NAME
-                                            )
-                                        }
-                                    }
-                                }
-                                stage('E2E Test') {
-                                    try {
-                                        sh 'yarn test-e2e-ci'
-                                    } catch (err) {
-                                        exceptionThrown = true
-                                        println 'Exception was caught in try block of e2e tests stage.'
-                                        println err
-                                    } finally {
-                                        junit testResults: 'test-results/e2e.xml', allowEmptyResults: true
-                                    }
+                        stage('Lint') {
+                            sh 'yarn lint'
+                        }
+                        stage('Build') {
+                            sh 'yarn build'
+                        }
+                        stage('Unit Test') {
+                            try {
+                                sh 'yarn test-unit-ci'
+                            } catch (err) {
+                                exceptionThrown = true
+                                println 'Exception was caught in try block of unit tests stage.'
+                                println err
+                            } finally {
+                                junit testResults: 'test-results/unit.xml', allowEmptyResults: true
+                                recordCoverage(
+                                    skipPublishingChecks: true,
+                                    sourceCodeRetention: 'EVERY_BUILD',
+                                    tools: [
+                                        [
+                                            parser: 'COBERTURA',
+                                            pattern: 'coverage/cobertura-coverage.xml'
+                                        ]
+                                    ]
+                                )
+                                if (upload) {
+                                    badges.uploadCoverageResult(
+                                        branch: env.BRANCH_NAME
+                                    )
                                 }
                             }
-                        )
+                        }
+                        stage('E2E Test') {
+                            try {
+                                sh 'yarn test-e2e-ci'
+                            } catch (err) {
+                                exceptionThrown = true
+                                println 'Exception was caught in try block of e2e tests stage.'
+                                println err
+                            } finally {
+                                junit testResults: 'test-results/e2e.xml', allowEmptyResults: true
+                            }
+                        }
                     }
 
                     if (upload) {
