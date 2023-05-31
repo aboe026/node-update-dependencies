@@ -6,7 +6,7 @@
     "name": "Adam Boe",
     "url": "https://github.com/aboe026"
   },
-  "private": true,
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/aboe026/node-update-dependencies.git"
