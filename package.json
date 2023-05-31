@@ -18,6 +18,9 @@
     "node": ">=18"
   },
   "bin": "./executable.js",
+  "files": [
+    "build/**"
+  ],
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf build",
