@@ -77,7 +77,7 @@ node {
                         }
 
                         // if (upload) {
-                        if (true) {
+                        if (true) { // groovylint-disable-line ConstantIfExpression
                             stage('Nexus Upload') {
                                 // upload to private nexus
                                 withCredentials([
