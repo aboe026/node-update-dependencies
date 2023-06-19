@@ -219,7 +219,7 @@ describe('Base', () => {
     })
     it('returns file path if Windows deeply nested directory provided', () => {
       expect(Base.getPackageJsonFilePath('C:\\Users\\john\\repos\\project')).toEqual(
-        `C:\\Users\\john\\repos\\project${isWindows ? '' : '/'}package.json`
+        `C:\\Users\\john\\repos\\project${isWindows ? '\\' : '/'}package.json`
       )
     })
   })

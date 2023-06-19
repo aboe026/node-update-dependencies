@@ -49,7 +49,7 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson)
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
@@ -99,7 +99,7 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson)
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
@@ -142,7 +142,7 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson)
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
@@ -247,6 +247,7 @@ describe('Yarn', () => {
   describe('getOutdatedDependencies', () => {
     describe('regular', () => {
       it('throws error if latest version of regular dependency is not valid semantic version', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -257,19 +258,23 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValue(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            dependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              dependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).rejects.toThrow(
           `Invalid latest version "${packages[0].latest}" for package "${packages[0].name}": Not a valid Semantic Version.`
         )
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns empty object if dependency not outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -280,17 +285,21 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValue(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            dependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              dependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({})
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns single package if outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -301,12 +310,15 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValueOnce(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            dependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              dependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[0].name]: {
             current: packages[0].current,
@@ -314,9 +326,10 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns multiple packages if outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -335,13 +348,16 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(packages[1].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            dependencies: {
-              [packages[0].name]: packages[0].current,
-              [packages[1].name]: packages[1].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              dependencies: {
+                [packages[0].name]: packages[0].current,
+                [packages[1].name]: packages[1].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[0].name]: {
             current: packages[0].current,
@@ -353,10 +369,11 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name, directory)
       })
       it('returns single outdated out of multiple packages', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -375,13 +392,16 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(packages[1].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            dependencies: {
-              [packages[0].name]: packages[0].current,
-              [packages[1].name]: packages[1].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              dependencies: {
+                [packages[0].name]: packages[0].current,
+                [packages[1].name]: packages[1].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[1].name]: {
             current: packages[1].current,
@@ -389,12 +409,13 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name, directory)
       })
     })
     describe('dev', () => {
       it('throws error if latest version of regular dependency is not valid semantic version', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -405,19 +426,23 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValue(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            devDependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              devDependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).rejects.toThrow(
           `Invalid latest version "${packages[0].latest}" for package "${packages[0].name}": Not a valid Semantic Version.`
         )
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns empty object if dependency not outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -428,17 +453,21 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValue(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            devDependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              devDependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({})
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns single package if outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -449,12 +478,15 @@ describe('Yarn', () => {
         const getLatestVersionSpy = jest.spyOn(Yarn, 'getLatestVersion').mockResolvedValueOnce(packages[0].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            devDependencies: {
-              [packages[0].name]: packages[0].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              devDependencies: {
+                [packages[0].name]: packages[0].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[0].name]: {
             current: packages[0].current,
@@ -462,9 +494,10 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
       })
       it('returns multiple packages if outdated', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -483,13 +516,16 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(packages[1].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            devDependencies: {
-              [packages[0].name]: packages[0].current,
-              [packages[1].name]: packages[1].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              devDependencies: {
+                [packages[0].name]: packages[0].current,
+                [packages[1].name]: packages[1].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[0].name]: {
             current: packages[0].current,
@@ -501,10 +537,11 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name, directory)
       })
       it('returns single outdated out of multiple packages', async () => {
+        const directory = '.'
         const packages = [
           {
             name: 'hello',
@@ -523,13 +560,16 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(packages[1].latest)
 
         await expect(
-          Yarn.getOutdatedDependencies({
-            name: 'test-unit',
-            devDependencies: {
-              [packages[0].name]: packages[0].current,
-              [packages[1].name]: packages[1].current,
+          Yarn.getOutdatedDependencies(
+            {
+              name: 'test-unit',
+              devDependencies: {
+                [packages[0].name]: packages[0].current,
+                [packages[1].name]: packages[1].current,
+              },
             },
-          })
+            directory
+          )
         ).resolves.toEqual({
           [packages[1].name]: {
             current: packages[1].current,
@@ -537,37 +577,69 @@ describe('Yarn', () => {
           },
         })
 
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name)
-        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[0].name, directory)
+        expect(getLatestVersionSpy).toHaveBeenCalledWith(packages[1].name, directory)
       })
     })
   })
   describe('getLatestVersion', () => {
     it('rejects promise if executeAsnyc throws error', async () => {
+      const directory = '.'
       const packageName = 'toast'
       const error = 'Not Found'
       const executeAsyncSpy = jest.spyOn(executeAsync, 'default').mockRejectedValue(error)
 
-      await expect(Yarn.getLatestVersion(packageName)).rejects.toEqual(error)
+      await expect(Yarn.getLatestVersion(packageName, directory)).rejects.toEqual(error)
 
       expect(executeAsyncSpy).toHaveBeenCalledWith({
-        command: `npm view ${packageName} version`,
+        command: `yarn npm info ${packageName} --json --fields version`,
+        options: {
+          cwd: directory,
+        },
       })
     })
 
-    it('returns stdout if executeAsync does not throw error', async () => {
+    it('rejects promise if invalid JSON returned', async () => {
+      const directory = '.'
       const packageName = 'toast'
-      const version = '1.0.0'
+      const stdout = 'invalid json'
       const reponse = {
-        stdout: version,
+        stdout,
         stderr: '',
       }
       const executeAsyncSpy = jest.spyOn(executeAsync, 'default').mockResolvedValue(reponse)
 
-      await expect(Yarn.getLatestVersion(packageName)).resolves.toEqual(version)
+      await expect(Yarn.getLatestVersion(packageName, directory)).rejects.toThrow(
+        `Invalid JSON "${stdout}" for package "${packageName}": SyntaxError: Unexpected token i in JSON at position 0`
+      )
 
       expect(executeAsyncSpy).toHaveBeenCalledWith({
-        command: `npm view ${packageName} version`,
+        command: `yarn npm info ${packageName} --json --fields version`,
+        options: {
+          cwd: directory,
+        },
+      })
+    })
+
+    it('returns stdout if valid JSON returned', async () => {
+      const directory = '.'
+      const packageName = 'toast'
+      const version = '1.0.0'
+      const reponse = {
+        stdout: JSON.stringify({
+          version,
+        }),
+        stderr: '',
+      }
+      const executeAsyncSpy = jest.spyOn(executeAsync, 'default').mockResolvedValue(reponse)
+
+      await expect(Yarn.getLatestVersion(packageName, directory)).resolves.toEqual(version)
+
+      expect(executeAsyncSpy).toHaveBeenCalledWith({
+        command: `yarn npm info ${packageName} --json --fields version`,
+        options: {
+          cwd: directory,
+        },
       })
     })
   })

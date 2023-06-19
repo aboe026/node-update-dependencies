@@ -3,7 +3,7 @@ import type { Config } from 'jest'
 const config: Config = {
   clearMocks: true,
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
-  modulePathIgnorePatterns: ['<rootDir>/build'],
+  modulePathIgnorePatterns: ['<rootDir>/build', './test/e2e/.temp-work-dir'],
   preset: 'ts-jest',
   resetMocks: true,
   restoreMocks: true,
