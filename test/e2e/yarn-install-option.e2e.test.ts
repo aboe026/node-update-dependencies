@@ -1,4 +1,4 @@
-import { replace, rimraf } from './util/e2e-packages'
+import { apple, banana } from './util/e2e-packages'
 import { testYarn } from './util/e2e-yarn-util'
 
 describe('Yarn', () => {
@@ -7,6 +7,7 @@ describe('Yarn', () => {
     const workspaceLocation = '.'
     describe('implicit', () => {
       describe('no later version', () => {
+        const expectedInstall = false
         it('does not change package json or install if regular dependency does not have updates', async () => {
           await testYarn({
             workspaces: [
@@ -16,16 +17,16 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if dev dependency does not have updates', async () => {
@@ -37,16 +38,16 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if regular and dev dependencies do not have updates', async () => {
@@ -58,28 +59,29 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...banana,
+                      initialVersion: banana.newVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: false,
+            expectedInstall,
           })
         })
       })
       describe('update available', () => {
+        const expectedInstall = true
         it('changes package json and installs if regular dependency has updates', async () => {
           await testYarn({
             workspaces: [
@@ -89,16 +91,16 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: true,
+            expectedInstall,
           })
         })
         it('changes package json and installs if dev dependency has updates', async () => {
@@ -110,16 +112,16 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: true,
+            expectedInstall,
           })
         })
         it('changes package json and installs if regular and dev dependencies have updates', async () => {
@@ -131,30 +133,31 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...banana,
+                      initialVersion: banana.oldVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.newVersion,
                     },
                   ],
                 },
               },
             ],
-            expectedInstall: true,
+            expectedInstall,
           })
         })
       })
     })
     describe('explicit false', () => {
       const options = '--install=false'
+      const expectedInstall = false
       describe('no later version', () => {
         it('does not change package json or install if regular dependency does not have update and install option is false', async () => {
           await testYarn({
@@ -165,17 +168,17 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if dev dependency does not have update and install option is false', async () => {
@@ -187,17 +190,17 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if regular or dev dependencies do not have updates and install option is false', async () => {
@@ -209,25 +212,25 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...banana,
+                      initialVersion: banana.newVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
       })
@@ -241,17 +244,17 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.older,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.oldVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('changes package json but does not install if dev dependency has update and install option is false', async () => {
@@ -263,17 +266,17 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.older,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.oldVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('changes package json but does not install if regular and dev dependencies have updates and install option is false', async () => {
@@ -285,25 +288,25 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.older,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.oldVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.older,
+                      ...banana,
+                      initialVersion: banana.oldVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.oldVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
       })
@@ -311,6 +314,7 @@ describe('Yarn', () => {
     describe('explicit true', () => {
       const options = '--install=true'
       describe('no later version', () => {
+        const expectedInstall = false
         it('does not change package json or install if regular dependency does not have update and install option is true', async () => {
           await testYarn({
             workspaces: [
@@ -320,17 +324,17 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if dev dependency does not have update and install option is true', async () => {
@@ -342,17 +346,17 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
         it('does not change package json or install if regular and dev dependencies do not have updates and install option is true', async () => {
@@ -364,29 +368,30 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.latest,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.newVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.latest,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...banana,
+                      initialVersion: banana.newVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: false,
+            expectedInstall,
           })
         })
       })
       describe('update available', () => {
+        const expectedInstall = true
         it('changes package json and installs if regular dependency has update and install option is true', async () => {
           await testYarn({
             workspaces: [
@@ -396,17 +401,17 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: true,
+            expectedInstall,
           })
         })
         it('changes package json and installs if dev dependency has update and install option is true', async () => {
@@ -418,17 +423,17 @@ describe('Yarn', () => {
                 dependencies: {
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: true,
+            expectedInstall,
           })
         })
         it('changes package json and installs if regular and dev dependencies have updates and install option is true', async () => {
@@ -440,25 +445,25 @@ describe('Yarn', () => {
                 dependencies: {
                   regular: [
                     {
-                      ...replace,
-                      initialVersion: replace.older,
-                      expectedPackageVersion: replace.latest,
-                      expectedInstalledVersion: replace.latest,
+                      ...apple,
+                      initialVersion: apple.oldVersion,
+                      expectedPackageVersion: apple.newVersion,
+                      expectedInstalledVersion: apple.newVersion,
                     },
                   ],
                   dev: [
                     {
-                      ...rimraf,
-                      initialVersion: rimraf.older,
-                      expectedPackageVersion: rimraf.latest,
-                      expectedInstalledVersion: rimraf.latest,
+                      ...banana,
+                      initialVersion: banana.oldVersion,
+                      expectedPackageVersion: banana.newVersion,
+                      expectedInstalledVersion: banana.newVersion,
                     },
                   ],
                 },
               },
             ],
             options,
-            expectedInstall: true,
+            expectedInstall,
           })
         })
       })

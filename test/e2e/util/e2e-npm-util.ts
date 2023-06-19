@@ -1,9 +1,11 @@
 import fs from 'fs-extra'
 import path from 'path'
 
+import { DependencyType, E2ePackageJson } from './e2e-packages'
 import { E2eTests, getTestName } from './e2e-test-info'
 import executeAsync from '../../../src/exec-async'
-import { DependencyType, E2ePackageJson, TestDependencies, verifyInstalledVersion } from './e2e-packages'
+import NpmRegistry from './npm-registry'
+import { TestDependencies, verifyInstalledVersion } from './e2e-packages'
 
 const PACKAGE_VERSION = {
   Old: '0.1.0',
@@ -32,18 +34,19 @@ export async function testNpm({
   if (dependencies.regular && packageJson.scripts) {
     packageJson.dependencies = {}
     for (const dependency of dependencies.regular) {
-      packageJson.dependencies[dependency.name] = dependency.initialVersion
-      packageJson.scripts[`${dependency.name}-${DependencyType.Regular}-version`] = dependency.versionScript
+      packageJson.dependencies[`${NpmRegistry.scope}/${dependency.name}`] = dependency.initialVersion
+      packageJson.scripts[`${dependency.name}-version`] = `${dependency.name}-version`
     }
   }
   if (dependencies.dev && packageJson.scripts) {
     packageJson.devDependencies = {}
     for (const dependency of dependencies.dev) {
-      packageJson.devDependencies[dependency.name] = dependency.initialVersion
-      packageJson.scripts[`${dependency.name}-${DependencyType.Dev}-version`] = dependency.versionScript
+      packageJson.devDependencies[`${NpmRegistry.scope}/${dependency.name}`] = dependency.initialVersion
+      packageJson.scripts[`${dependency.name}-version`] = `${dependency.name}-version`
     }
   }
   await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2))
+  await fs.writeFile(path.join(directory, '.npmrc'), NpmRegistry.getNpmRc())
 
   await executeAsync({
     command: 'npm install',
@@ -80,12 +83,12 @@ export async function testNpm({
   // update packageJson object with new expected dependency versions to pass of to verification method
   if (dependencies.regular && packageJson.dependencies) {
     for (const dependency of dependencies.regular) {
-      packageJson.dependencies[dependency.name] = dependency.expectedPackageVersion
+      packageJson.dependencies[`${NpmRegistry.scope}/${dependency.name}`] = dependency.expectedPackageVersion
     }
   }
   if (dependencies.dev && packageJson.devDependencies) {
     for (const dependency of dependencies.dev) {
-      packageJson.devDependencies[dependency.name] = dependency.expectedPackageVersion
+      packageJson.devDependencies[`${NpmRegistry.scope}/${dependency.name}`] = dependency.expectedPackageVersion
     }
   }
 

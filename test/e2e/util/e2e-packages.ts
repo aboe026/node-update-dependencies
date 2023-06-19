@@ -2,49 +2,32 @@ import executeAsync from '../../../src/exec-async'
 import { PackageJson } from '../../../src/base'
 import { Workspace } from '../../../src/yarn'
 
-export const replace: E2ePackage = {
-  name: 'replace-in-file',
-  older: '6.3.4',
-  latest: '',
-  versionScript: 'replace-in-file --version',
-  versionRegex: /^(\d+.\d+.\d+)$/m,
+export const versionRegex = /version: "(.*?)"/
+
+export const apple: E2ePackage = {
+  name: 'apple',
+  oldVersion: '1.0.0', // TODO: change to versions: { oldest, latest } ?
+  newVersion: '1.0.1',
 }
 
-export const rimraf: E2ePackage = {
-  name: 'rimraf',
-  older: '4.4.1',
-  latest: '',
-  versionScript: 'rimraf --help',
-  versionRegex: /rimraf version (\S+)/,
+export const banana: E2ePackage = {
+  name: 'banana',
+  oldVersion: '2.0.0',
+  newVersion: '3.0.0',
 }
 
-export const runAll: E2ePackage = {
-  name: 'npm-run-all',
-  older: '4.0.0',
-  latest: '',
-  versionScript: 'npm-run-all --version',
-  versionRegex: /v(\S+)/,
+export const cherry: E2ePackage = {
+  name: 'cherry',
+  oldVersion: '4.1.0',
+  newVersion: '4.2.0',
 }
 
-export default {
-  replace,
-  rimraf,
-  runAll,
-}
+export default [apple, banana, cherry]
 
 export interface E2ePackage {
   name: string
-  latest: string
-  older: string
-  versionScript: string
-  versionRegex: RegExp
-}
-
-export async function getLatestVersion(packageName: string): Promise<string> {
-  const response = await executeAsync({
-    command: `npm view ${packageName} version`,
-  })
-  return response.stdout.trim()
+  oldVersion: string
+  newVersion: string
 }
 
 export interface E2ePackageJson extends PackageJson {
@@ -74,15 +57,12 @@ export interface TestDependency {
   initialVersion: string
   expectedPackageVersion: string
   expectedInstalledVersion: string
-  versionScript: string
-  versionRegex: RegExp
 }
 
 export async function verifyInstalledVersion({
   directory,
   executionCommand,
   dependency,
-  type,
   expectedVersion,
 }: {
   directory: string
@@ -92,15 +72,15 @@ export async function verifyInstalledVersion({
   expectedVersion: string
 }): Promise<void> {
   const response = await executeAsync({
-    command: `${executionCommand} ${dependency.name}-${type}-version`,
+    command: `${executionCommand} ${dependency.name}-version`,
     options: {
       cwd: directory,
     },
   })
-  const installedVersion = response.stdout.match(dependency.versionRegex)
+  const installedVersion = response.stdout.match(versionRegex)
   if (!installedVersion || installedVersion.length < 2) {
     throw Error(
-      `Could not get installed version of package "${dependency.name}" from "${response.stdout}" using regex "${dependency.versionRegex}"`
+      `Could not get installed version of package "${dependency.name}" from "${response.stdout}" using regex "${versionRegex}"`
     )
   }
   expect(installedVersion[1]).toEqual(expectedVersion)

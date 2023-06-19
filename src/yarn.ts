@@ -19,7 +19,7 @@ export default class Yarn extends Base {
           workspaces.map(async (workspace) => {
             const workspaceDirectory = path.join(directory, workspace.location)
             const packageJson = await Yarn.getPackageJson(workspaceDirectory)
-            const outdatedDependencies = await Yarn.getOutdatedDependencies(packageJson)
+            const outdatedDependencies = await Yarn.getOutdatedDependencies(packageJson, workspaceDirectory)
             outdatedDependenciesCount += Object.keys(outdatedDependencies).length
             Yarn.updatePackagesWithLatestVersion(packageJson, outdatedDependencies)
             await Yarn.setPackageJson(workspaceDirectory, packageJson)
@@ -53,7 +53,7 @@ export default class Yarn extends Base {
     return workspaces
   }
 
-  static async getOutdatedDependencies(packageJson: PackageJson): Promise<OutdatedDependencies> {
+  static async getOutdatedDependencies(packageJson: PackageJson, directory: string): Promise<OutdatedDependencies> {
     const outdatedDependencies: OutdatedDependencies = {}
     let packages: { [key: string]: string } = {}
     if (packageJson.dependencies) {
@@ -72,7 +72,7 @@ export default class Yarn extends Base {
     if (packageKeys.length > 0) {
       await Promise.all(
         packageKeys.map(async (packageName) => {
-          const latest = await Yarn.getLatestVersion(packageName)
+          const latest = await Yarn.getLatestVersion(packageName, directory)
           if (!semver.valid(latest)) {
             throw Error(
               `Invalid latest version "${latest}" for package "${packageName}": Not a valid Semantic Version.`
@@ -91,11 +91,21 @@ export default class Yarn extends Base {
     return outdatedDependencies
   }
 
-  static async getLatestVersion(packageName: string): Promise<string> {
+  static async getLatestVersion(packageName: string, directory: string): Promise<string> {
     const response = await executeAsync({
-      command: `npm view ${packageName} version`,
+      command: `yarn npm info ${packageName} --json --fields version`,
+      options: {
+        cwd: directory,
+      },
     })
-    return response.stdout.trim()
+    const contents = response.stdout.trim()
+    let json
+    try {
+      json = JSON.parse(contents)
+    } catch (err: unknown) {
+      throw Error(`Invalid JSON "${contents}" for package "${packageName}": ${err}`)
+    }
+    return json.version
   }
 }
 

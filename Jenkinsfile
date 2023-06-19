@@ -84,11 +84,12 @@ node {
                                     usernamePassword(credentialsId: 'NEXUS_CREDENTIALS', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')
                                 ]) {
                                     withEnv([
-                                        'YARN_NPM_PUBLISH_REGISTRY=http://localhost:8081/repository/update-dependencies/',
-                                        "YARN_NPM_AUTH_IDENT=${NEXUS_USERNAME}:${NEXUS_PASSWORD}"
+                                        "YARN_NPM_AUTH_IDENT=${NEXUS_USERNAME}:${NEXUS_PASSWORD}",
+                                        'YARN_NPM_PUBLISH_REGISTRY=http://host.docker.internal:8081/repository/update-dependencies/',
+                                        'YARN_UNSAFE_HTTP_WHITELIST=host.docker.internal'
                                     ]) {
                                         sh 'yarn npm login --publish'
-                                        sh "yarn npm publish --tag=${packageJson.version}"
+                                        sh "yarn npm publish --tag=${packageJson.version} --tag=latest"
                                     }
                                 }
                             }

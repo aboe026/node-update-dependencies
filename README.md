@@ -194,7 +194,7 @@ With spaces separating describe blocks and test names
 
 End to End (E2E) Tests run against the final, distributable executable and are meant to test overarching scenarios of the tool to simulate as close as possible the real interactions and use/edge cases.
 
-They required code to be [packaged](#package), and can be run with
+They required code to be [built](#build), and can be run with
 
 ```sh
 yarn test:e2e
@@ -207,6 +207,8 @@ yarn test-e2e -t 'test name'
 ```
 
 With spaces separating describe blocks and test names
+
+The E2E tests spin up a private NPM registry in memory using [verdaccio](https://verdaccio.org/).
 
 ### Code Coverage
 

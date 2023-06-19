@@ -1,4 +1,4 @@
-import { replace, rimraf, runAll } from './util/e2e-packages'
+import { apple, banana, cherry } from './util/e2e-packages'
 import { testYarn } from './util/e2e-yarn-util'
 
 describe('Yarn', () => {
@@ -14,10 +14,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -29,10 +29,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -43,10 +43,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -65,10 +65,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -80,10 +80,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -94,10 +94,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -116,10 +116,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -131,10 +131,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -145,10 +145,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -167,10 +167,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -182,10 +182,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -196,10 +196,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -220,10 +220,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -235,10 +235,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -249,10 +249,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -271,10 +271,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -286,10 +286,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -300,10 +300,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -322,10 +322,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -337,10 +337,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -351,10 +351,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -373,10 +373,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -388,10 +388,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -402,10 +402,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -426,10 +426,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -441,10 +441,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -455,10 +455,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -477,10 +477,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -492,10 +492,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -506,10 +506,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -528,10 +528,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -543,10 +543,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -557,10 +557,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -579,10 +579,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -594,10 +594,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -608,10 +608,10 @@ describe('Yarn', () => {
               dependencies: {
                 regular: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -632,10 +632,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -647,10 +647,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -661,10 +661,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -683,10 +683,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -698,10 +698,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -712,10 +712,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.latest,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.newVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -734,10 +734,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.latest,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.newVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -749,10 +749,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -763,10 +763,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
@@ -785,10 +785,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...rimraf,
-                    initialVersion: rimraf.older,
-                    expectedPackageVersion: rimraf.latest,
-                    expectedInstalledVersion: rimraf.latest,
+                    ...apple,
+                    initialVersion: apple.oldVersion,
+                    expectedPackageVersion: apple.newVersion,
+                    expectedInstalledVersion: apple.newVersion,
                   },
                 ],
               },
@@ -800,10 +800,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...replace,
-                    initialVersion: replace.latest,
-                    expectedPackageVersion: replace.latest,
-                    expectedInstalledVersion: replace.latest,
+                    ...banana,
+                    initialVersion: banana.newVersion,
+                    expectedPackageVersion: banana.newVersion,
+                    expectedInstalledVersion: banana.newVersion,
                   },
                 ],
               },
@@ -814,10 +814,10 @@ describe('Yarn', () => {
               dependencies: {
                 dev: [
                   {
-                    ...runAll,
-                    initialVersion: runAll.older,
-                    expectedPackageVersion: runAll.latest,
-                    expectedInstalledVersion: runAll.latest,
+                    ...cherry,
+                    initialVersion: cherry.oldVersion,
+                    expectedPackageVersion: cherry.newVersion,
+                    expectedInstalledVersion: cherry.newVersion,
                   },
                 ],
               },
