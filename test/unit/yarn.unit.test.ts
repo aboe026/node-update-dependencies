@@ -1,4 +1,5 @@
 import path from 'path'
+import os from 'os'
 
 import { BaseOptions } from '../../src/base'
 import * as executeAsync from '../../src/exec-async'
@@ -49,7 +50,10 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(
+          packageJson,
+          os.platform() === 'win32' ? directory.replace(/\//g, '\\') : directory
+        )
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
@@ -99,7 +103,10 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(
+          packageJson,
+          os.platform() === 'win32' ? directory.replace(/\//g, '\\') : directory
+        )
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
@@ -142,7 +149,10 @@ describe('Yarn', () => {
         expect(getDirectorySpy).toHaveBeenCalled()
         expect(getWorkspacesSpy).toHaveBeenCalledWith(directory)
         expect(getPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location))
-        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(packageJson, directory.replace(/\//g, '\\'))
+        expect(getOutdatedDependenciesSpy).toHaveBeenCalledWith(
+          packageJson,
+          os.platform() === 'win32' ? directory.replace(/\//g, '\\') : directory
+        )
         expect(updatePackagesSpy).toHaveBeenCalledWith(packageJson, outdatedDependencies)
         expect(setPackageJsonSpy).toHaveBeenCalledWith(path.join(directory, workspaces[0].location), packageJson)
         expect(getBooleanArgumentSpy).toHaveBeenCalledWith(argv, BaseOptions.Install)
