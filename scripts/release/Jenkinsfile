@@ -1,0 +1,133 @@
+parameters([
+    string(
+        name: 'buildNumber',
+        defaultValue: 'lastSuccessful',
+        description: 'The number of the build to release. If "lastSuccessful", will resolve the number from the last successful build. For example: "19".'
+    ),
+    booleanParam(
+        name: 'tagAsLatest',
+        defaultValue: true,
+        description: 'Whether or not the version is also published with the "latest" tag to NPM',
+    )
+])
+
+node {
+    def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
+    def packageName
+    def nodeImage = 'node:18'
+    def resolvedBuildNumber
+    def versionToRelease
+    def downloadDir = 'download'
+    def exceptionThrown = false
+    try {
+        ansiColor('xterm') {
+            dir(workDir) {
+                stage('Checkout Code') {
+                    checkout scm
+
+                    def packageJson = readJSON file: 'package.json'
+                    packageName = packageJson.name
+                    println "TEST packageName: '${packageName}'"
+                }
+
+                stage('Resolve Build Number') {
+                    def buildName = '/node-update-dependencies/node-update-dependencies'
+                    def buildBranch = 'main'
+                    if (params.buildNumber == 'lastSuccessful') {
+                        println "Resolving build number from the '${buildBranch}' branch of multi-branch job '${buildName}'..."
+                        resolvedBuildNumber = Jenkins.instance.getItemByFullName(buildName).getItem(buildBranch).getLastSuccessfulBuild().number
+                        println "...resolved build number to: '${resolvedBuildNumber}'"
+                    } else {
+                        resolvedBuildNumber = params.buildNumber
+                        println "Using explicit build number provided by 'buildNumber' input parameter: '${resolvedBuildNumber}'"
+                    }
+                    def versionDisplayName = Jenkins.instance.getItemByFullName(buildName).getItem(buildBranch).getBuildByNumber(resolvedBuildNumber.toInteger()).getDisplayName()
+                    println "Display name of build '${resolvedBuildNumber}': '${versionDisplayName}'"
+                    versionToRelease = versionDisplayName.split(/\+/)[0]
+                    currentBuild.description = versionToRelease
+                }
+
+                stage('Pull Runtime Image') {
+                    sh "docker pull ${nodeImage}"
+                }
+
+                docker.image(nodeImage).inside {
+                    stage('Download Nexus Package') {
+                        dir(downloadDir) {
+                            withCredentials([
+                                usernamePassword(credentialsId: 'NEXUS_CREDENTIALS', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')
+                            ]) {
+                                sh """npx npm-cli-adduser \\
+                                    --username=${NEXUS_USERNAME} \\
+                                    --password=${NEXUS_PASSWORD} \\
+                                    --registry=http://host.docker.internal:8081
+                                """
+                                sh "npm pack ${packageName}@${versionToRelease}"
+                            }
+                        }
+                    }
+                    stage('Upload to NPM') {
+                        dir(downloadDir) {
+                            withCredentials([
+                                usernamePassword(credentialsId: 'npm-public-registry', usernameVariable: 'NPM_USERNAME', passwordVariable: 'NPM_PASSWORD')
+                            ]) {
+                                sh """npx npm-cli-adduser \\
+                                    --username=${NPM_USERNAME} \\
+                                    --password=${NPM_PASSWORD} \\
+                                    --registry=https://registry.npmjs.org/
+                                """
+                                sh """npm publish ${packageName}-${versionToRelease}.tgz \\
+                                    --access=public \\
+                                    --tag=${versionToRelease} \\
+                                    ${params.tagAsLatest ? '--tag=latest' : ''} \\
+                                    --dry-run
+                                """
+                            }
+                        }
+                    }
+
+                    stage('Install Dependencies') {
+                        sh 'yarn install'
+                    }
+
+                    stage('Release') {
+                        withCredentials([
+                            string(credentialsId: 'GITHUB_PERSONAL_ACCESS_TOKEN', variable: 'GITHUB_PERSONAL_ACCESS_TOKEN')
+                        ]) {
+                            withEnv([
+                                "PACKAGE_TARBALL=${workDir}/${downloadDir}/${packageName}-${versionToRelease}.tgz",
+                                "TAG_AS_LATEST=${params.tagAsLatest}",
+                                "RELEASE_VERSION=${versionToRelease}",
+                                "RELEASE_BUILD=${resolvedBuildNumber}"
+                            ]) {
+                                sh 'yarn release'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+  } catch (err) {
+        exceptionThrown = true
+        println 'Exception was caught in try block of jenkins job.'
+        println err
+  } finally {
+        stage('Cleanup') {
+            try {
+                sh "rm -rf ${workDir}"
+            } catch (err) {
+                println 'Exception deleting working directory'
+                println err
+            }
+            try {
+                sh "rm -rf ${workDir}@tmp"
+            } catch (err) {
+                println 'Exception deleting temporary working directory'
+                println err
+            }
+            if (exceptionThrown) {
+                error('Exception was thrown earlier')
+            }
+        }
+    }
+}

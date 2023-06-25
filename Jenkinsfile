@@ -17,8 +17,7 @@ node {
                     stage('Prep') {
                         checkout scm
 
-                        def packageJsonName = 'package.json'
-                        packageJson = readJSON file: packageJsonName
+                        packageJson = readJSON file: 'package.json'
                         projectName = packageJson.name.split('/')[0].replace('@', '')
                         currentBuild.displayName = "${packageJson.version}+${env.BUILD_ID}"
                     }
@@ -76,10 +75,8 @@ node {
                             }
                         }
 
-                        // if (upload) {
-                        if (true) { // groovylint-disable-line ConstantIfExpression
+                        if (upload) {
                             stage('Nexus Upload') {
-                                // upload to private nexus
                                 withCredentials([
                                     usernamePassword(credentialsId: 'NEXUS_CREDENTIALS', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')
                                 ]) {
