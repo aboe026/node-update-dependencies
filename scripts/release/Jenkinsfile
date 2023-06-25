@@ -15,14 +15,15 @@ properties([
 
 node {
     def workDir = "${WORKSPACE}/${env.BUILD_ID}"
+    def nodeImage = 'node:18'
+    def downloadDir = 'download'
+    def npmrcFile = '~/.npmrc'
     def packageName
     def packageOrg
     def packagePath
-    def nodeImage = 'node:18'
     def resolvedBuildNumber
     def versionToRelease
-    def downloadDir = 'download'
-    def npmrcFile = '~/.npmrc'
+    def tarballName
     def exceptionThrown = false
     try {
         ansiColor('xterm') {
@@ -78,8 +79,8 @@ node {
                                 // for some reason writeFile wasn't working, resorted to sh echo commands
                                 sh "echo //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN} > ${npmrcFile}"
                             }
-                            def packedName = "${packageName.replace('@', '').replace('/', '-')}-${versionToRelease}.tgz"
-                            sh """npm publish ${packedName} \\
+                            tarballName = "${packageName.replace('@', '').replace('/', '-')}-${versionToRelease}.tgz"
+                            sh """npm publish ${tarballName} \\
                                 --access=public \\
                                 --tag=${versionToRelease} \\
                                 ${params.tagAsLatest ? '--tag=latest' : ''} \\
@@ -97,7 +98,7 @@ node {
                             string(credentialsId: 'GITHUB_PERSONAL_ACCESS_TOKEN', variable: 'GITHUB_PERSONAL_ACCESS_TOKEN')
                         ]) {
                             withEnv([
-                                "PACKAGE_TARBALL=${workDir}/${downloadDir}/${packageName}-${versionToRelease}.tgz",
+                                "PACKAGE_TARBALL=${workDir}/${downloadDir}/${tarballName}",
                                 "TAG_AS_LATEST=${params.tagAsLatest}",
                                 "RELEASE_VERSION=${versionToRelease}",
                                 "RELEASE_BUILD=${resolvedBuildNumber}"

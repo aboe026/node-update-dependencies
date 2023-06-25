@@ -33,16 +33,16 @@ const repo = 'node-update-dependencies'
     }),
   })
 
-  console.log(`Uploading asset "${env.PACKAGE_TARBALL}"...`)
+  console.log(`Uploading asset "${tarballPath}"...`)
   await github.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.data.id,
-    name: env.PACKAGE_TARBALL,
-    data: (await fs.readFile(env.PACKAGE_TARBALL)) as unknown as string,
+    name: path.basename(tarballPath),
+    data: (await fs.readFile(tarballPath)) as unknown as string,
     headers: {
       'content-type': 'application/octet-stream',
-      'content-length': (await fs.stat(env.PACKAGE_TARBALL)).size,
+      'content-length': (await fs.stat(tarballPath)).size,
     },
   })
 
