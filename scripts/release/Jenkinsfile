@@ -1,14 +1,16 @@
-parameters([
-    string(
-        name: 'buildNumber',
-        defaultValue: 'lastSuccessful',
-        description: 'The number of the build to release. If "lastSuccessful", will resolve the number from the last successful build. For example: "19".'
-    ),
-    booleanParam(
-        name: 'tagAsLatest',
-        defaultValue: true,
-        description: 'Whether or not the version is also published with the "latest" tag to NPM',
-    )
+properties([
+    parameters([
+        string(
+            name: 'buildNumber',
+            defaultValue: 'lastSuccessful',
+            description: 'The number of the build to release. If "lastSuccessful", will resolve the number from the last successful build. For example: "19".'
+        ),
+        booleanParam(
+            name: 'tagAsLatest',
+            defaultValue: true,
+            description: 'Whether or not the version is also published with the "latest" tag to NPM',
+        )
+    ])
 ])
 
 node {
