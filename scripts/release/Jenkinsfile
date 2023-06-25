@@ -38,7 +38,7 @@ node {
 
                 stage('Resolve Build Number') {
                     def buildName = '/node-update-dependencies/node-update-dependencies'
-                    def buildBranch = 'PR-1'
+                    def buildBranch = 'main'
                     if (params.buildNumber == 'lastSuccessful') {
                         println "Resolving build number from the '${buildBranch}' branch of multi-branch job '${buildName}'..."
                         resolvedBuildNumber = Jenkins.instance.getItemByFullName(buildName).getItem(buildBranch).getLastSuccessfulBuild().number
@@ -83,8 +83,7 @@ node {
                             sh """npm publish ${tarballName} \\
                                 --access=public \\
                                 --tag=${versionToRelease} \\
-                                ${params.tagAsLatest ? '--tag=latest' : ''} \\
-                                --dry-run
+                                ${params.tagAsLatest ? '--tag=latest' : ''}
                             """
                         }
                     }

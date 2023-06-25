@@ -14,7 +14,7 @@ interface Release {
 
 const notes: Release[] = [
   {
-    version: '0.1.0',
+    version: '1.0.0',
     description: 'Initial public release.',
     features: ['Update NPM or Yarn projects (#1)'],
   },
