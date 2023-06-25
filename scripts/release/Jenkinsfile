@@ -1,0 +1,135 @@
+properties([
+    parameters([
+        string(
+            name: 'buildNumber',
+            defaultValue: 'lastSuccessful',
+            description: 'The number of the build to release. If "lastSuccessful", will resolve the number from the last successful build. For example: "19".'
+        ),
+        booleanParam(
+            name: 'tagAsLatest',
+            defaultValue: true,
+            description: 'Whether or not the version is also published with the "latest" tag to NPM',
+        )
+    ])
+])
+
+node {
+    def workDir = "${WORKSPACE}/${env.BUILD_ID}"
+    def nodeImage = 'node:18'
+    def downloadDir = 'download'
+    def npmrcFile = '~/.npmrc'
+    def packageName
+    def packageOrg
+    def packagePath
+    def resolvedBuildNumber
+    def versionToRelease
+    def tarballName
+    def exceptionThrown = false
+    try {
+        ansiColor('xterm') {
+            dir(workDir) {
+                stage('Checkout Code') {
+                    checkout scm
+
+                    def packageJson = readJSON file: 'package.json'
+                    packageName = packageJson.name
+                    (packageOrg, packagePath) = packageName.split('/')
+                }
+
+                stage('Resolve Build Number') {
+                    def buildName = '/node-update-dependencies/node-update-dependencies'
+                    def buildBranch = 'main'
+                    if (params.buildNumber == 'lastSuccessful') {
+                        println "Resolving build number from the '${buildBranch}' branch of multi-branch job '${buildName}'..."
+                        resolvedBuildNumber = Jenkins.instance.getItemByFullName(buildName).getItem(buildBranch).getLastSuccessfulBuild().number
+                        println "...resolved build number to: '${resolvedBuildNumber}'"
+                    } else {
+                        resolvedBuildNumber = params.buildNumber
+                        println "Using explicit build number provided by 'buildNumber' input parameter: '${resolvedBuildNumber}'"
+                    }
+                    def versionDisplayName = Jenkins.instance.getItemByFullName(buildName).getItem(buildBranch).getBuildByNumber(resolvedBuildNumber.toInteger()).getDisplayName()
+                    println "Display name of build '${resolvedBuildNumber}': '${versionDisplayName}'"
+                    versionToRelease = versionDisplayName.split(/\+/)[0]
+                    currentBuild.description = versionToRelease
+                }
+
+                stage('Pull Runtime Image') {
+                    sh "docker pull ${nodeImage}"
+                }
+
+                docker.image(nodeImage).inside {
+                    stage('Download Nexus Package') {
+                        dir(downloadDir) {
+                            withCredentials([
+                                usernamePassword(credentialsId: 'NEXUS_CREDENTIALS', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')
+                            ]) {
+                                def authToken = "${NEXUS_USERNAME}:${NEXUS_PASSWORD}".bytes.encodeBase64().toString()
+                                // for some reason writeFile wasn't working, resorted to sh echo commands
+                                sh "echo ${packageOrg}:registry=http://host.docker.internal:8081/repository/${packagePath} > ${npmrcFile}"
+                                sh "echo //host.docker.internal:8081/repository/:_auth=${authToken} >> ${npmrcFile}"
+                            }
+                            sh "npm pack ${packageName}@${versionToRelease}"
+                        }
+                    }
+                    stage('Upload to NPM') {
+                        dir(downloadDir) {
+                            withCredentials([
+                                string(credentialsId: 'NPM_AUTH_TOKEN', variable: 'NPM_AUTH_TOKEN')
+                            ]) {
+                                // for some reason writeFile wasn't working, resorted to sh echo commands
+                                sh "echo //registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN} > ${npmrcFile}"
+                            }
+                            tarballName = "${packageName.replace('@', '').replace('/', '-')}-${versionToRelease}.tgz"
+                            sh """npm publish ${tarballName} \\
+                                --access=public \\
+                                --tag=${versionToRelease} \\
+                                ${params.tagAsLatest ? '--tag=latest' : ''}
+                            """
+                        }
+                    }
+
+                    stage('Install Dependencies') {
+                        sh 'yarn install'
+                    }
+
+                    stage('Release') {
+                        withCredentials([
+                            string(credentialsId: 'GITHUB_PERSONAL_ACCESS_TOKEN', variable: 'GITHUB_PERSONAL_ACCESS_TOKEN')
+                        ]) {
+                            withEnv([
+                                "PACKAGE_TARBALL=${workDir}/${downloadDir}/${tarballName}",
+                                "TAG_AS_LATEST=${params.tagAsLatest}",
+                                "RELEASE_VERSION=${versionToRelease}",
+                                "RELEASE_BUILD=${resolvedBuildNumber}"
+                            ]) {
+                                sh 'yarn release'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+  } catch (err) {
+        exceptionThrown = true
+        println 'Exception was caught in try block of jenkins job.'
+        println err
+  } finally {
+        stage('Cleanup') {
+            try {
+                sh "rm -rf ${workDir}"
+            } catch (err) {
+                println 'Exception deleting working directory'
+                println err
+            }
+            try {
+                sh "rm -rf ${workDir}@tmp"
+            } catch (err) {
+                println 'Exception deleting temporary working directory'
+                println err
+            }
+            if (exceptionThrown) {
+                error('Exception was thrown earlier')
+            }
+        }
+    }
+}
