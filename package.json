@@ -17,7 +17,9 @@
   "engines": {
     "node": ">=18"
   },
-  "bin": "./executable.js",
+  "bin": {
+    "update-dependencies": "./executable.js"
+  },
   "files": [
     "build/**"
   ],

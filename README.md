@@ -7,13 +7,13 @@ A tool to update/upgrade dependencies managed by either [NPM](https://www.npmjs.
 If your project uses [NPM](https://www.npmjs.com/) as a package manager, install with
 
 ```sh
-npm install @aboe026/update-dependencies
+npm install @aboe026/update-dependencies --save-dev
 ```
 
 If your project uses [Yarn](https://yarnpkg.com/) as a package manager, install with
 
 ```sh
-yarn @aboe026/update-dependencies
+yarn add @aboe026/update-dependencies --dev
 ```
 
 ## Usage
