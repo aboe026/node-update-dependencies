@@ -1,5 +1,8 @@
 # node-update-dependencies
 
+![build](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/node-update-dependencies/main/build.json)
+![coverage](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/node-update-dependencies/main/coverage.json)
+
 A tool to update/upgrade dependencies managed by either [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/).
 
 ## Install
