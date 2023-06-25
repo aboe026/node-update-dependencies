@@ -24,19 +24,27 @@ yarn add @aboe026/update-dependencies --dev
 Add the following to the [script section of your package.json](https://docs.npmjs.com/cli/v9/configuring-npm/package-json#scripts)
 
 ```json
-"update": "update-dependencies"
+"update": "update-dependencies npm"
 ```
 
-or call directly through command line with either
+for NPM projects or
+
+```json
+"update": "update-dependencies yarn"
+```
+
+for Yarn projects.
+
+It can also be called directly through command line with either
 
 ```sh
-npx update-dependencies
+npx update-dependencies npm
 ```
 
 or
 
 ```sh
-yarn dlx update-dependencies
+yarn dlx update-dependencies yarn
 ```
 
 ## Command Line Interface
