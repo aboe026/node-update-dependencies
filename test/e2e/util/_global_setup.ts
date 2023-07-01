@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 
-import config from './e2e-config'
+import env from './e2e-env'
 import NpmRegistry from './npm-registry'
 import packages from './e2e-packages'
 
@@ -9,8 +9,8 @@ import packages from './e2e-packages'
  */
 
 export default async () => {
-  await fs.remove(config.TEMP_WORK_DIR)
-  await fs.ensureDir(config.TEMP_WORK_DIR)
+  await fs.remove(env.E2E_TEMP_WORK_DIR)
+  await fs.ensureDir(env.E2E_TEMP_WORK_DIR)
   await NpmRegistry.start()
   for (const e2ePackage of packages) {
     await NpmRegistry.addPackage(e2ePackage.name, e2ePackage.oldVersion)

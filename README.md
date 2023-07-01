@@ -58,14 +58,39 @@ Commands:
   update-dependencies yarn  Update packages for a project with Yarn as the
                             package manager
 
-Globals:
-  -i, --install  Whether or not package updates should be installed
-                                                       [boolean] [default: true]
-
 Options:
       --help     Show help                                             [boolean]
       --version  Show version number                                   [boolean]
+  -c, --config   Path to configuration file                             [string]
+  -i, --install  Whether or not package updates should be installed
+                                                       [boolean] [default: true]
 ```
+
+## Configuration File
+
+Configuration can also be placed in a configuration file. Files are found using [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig), so the following files are picked up by default:
+
+```
+package.json
+.dependency-updatesrc
+.dependency-updatesrc.json`,
+.dependency-updatesrc.yaml`,
+.dependency-updatesrc.yml
+.dependency-updatesrc.js
+.dependency-updatesrc.mjs
+.dependency-updatesrc.cjs
+.config/dependency-updatesrc
+.config/dependency-updatesrc.json
+.config/dependency-updatesrc.yaml
+.config/dependency-updatesrc.yml
+.config/dependency-updatesrc.js
+.config/dependency-updatesrc.cjs
+dependency-updates.config.js
+dependency-updates.config.mjs
+dependency-updates.config.cjs
+```
+
+You can also use the `--config` flag to reference a file of any name.
 
 ---
 
@@ -220,6 +245,13 @@ yarn test-e2e -t 'test name'
 With spaces separating describe blocks and test names
 
 The E2E tests spin up a private NPM registry in memory using [verdaccio](https://verdaccio.org/).
+
+Test execution can be configured with the following environment variables:
+
+| Name                  | Required | Default                 | Description                                                              | Example(s)                        |
+| --------------------- | -------- | ----------------------- | ------------------------------------------------------------------------ | --------------------------------- |
+| E2E_NPM_REGISTRY_PORT | Yes      | 4873                    | The port to run the NPM registry used by E2E tests.                      | 5984                              |
+| E2E_TEMP_WORK_DIR     | Yes      | test/e2e/.temp-work-dir | The directory that E2E tests should create temporary projects for tests. | /tmp/node-update-dependencies-e2e |
 
 ### Code Coverage
 

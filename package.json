@@ -1,7 +1,7 @@
 {
   "name": "@aboe026/update-dependencies",
   "description": "A tool to update/upgrade dependencies managed by either NPM or Yarn",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": {
     "name": "Adam Boe",
     "url": "https://github.com/aboe026"
@@ -43,6 +43,7 @@
     "watch": "yarn build --watch"
   },
   "dependencies": {
+    "cosmiconfig": "8.2.0",
     "semver": "7.5.3",
     "yargs": "17.7.2"
   },

@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 
-import config from './e2e-config'
+import env from './e2e-env'
 import { E2eTests, getTestName } from './e2e-test-info'
 
 /**
@@ -15,7 +15,7 @@ import { E2eTests, getTestName } from './e2e-test-info'
 
 beforeEach(async () => {
   const id = uuidv4()
-  const directory = path.join(config.TEMP_WORK_DIR, id)
+  const directory = path.join(env.E2E_TEMP_WORK_DIR, id)
   await fs.ensureDir(directory)
   E2eTests[getTestName()] = {
     id,

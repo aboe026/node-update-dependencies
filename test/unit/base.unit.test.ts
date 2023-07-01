@@ -1,7 +1,8 @@
 import fs from 'fs/promises'
 import os from 'os'
 
-import Base, { PackageJson } from '../../src/base'
+import Base, { BaseOptions, PackageJson } from '../../src/base'
+import Config from '../../src/config'
 import Option from '../../src/option'
 
 describe('Base', () => {
@@ -225,13 +226,155 @@ describe('Base', () => {
   })
 
   describe('getBooleanArgument', () => {
-    it('returns undefined if no arguments match', () => {
+    it('gets true value from options if user explicilty sets it', async () => {
+      const value = true
+      const argv = {
+        $0: 'command',
+        _: ['non-option'],
+      }
+      const option = new Option({
+        key: 'foo',
+        value: {
+          description: 'hello world',
+        },
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const userExplicitlySetArgumentSpy = jest.spyOn(Base as any, 'userExplicitlySetArgument').mockReturnValue(true)
+      const configGetBooleanSpy = jest.spyOn(Config, 'getBoolean')
+      const optionGetStringSpy = jest.spyOn(Option, 'getStringValue')
+      const optionGetBooleanSpy = jest.spyOn(Option, 'getBooleanValue').mockReturnValue(value)
+
+      await expect(Base.getBooleanArgument(argv, option)).resolves.toEqual(value)
+
+      expect(userExplicitlySetArgumentSpy).toHaveBeenCalledWith(option)
+      expect(configGetBooleanSpy).not.toHaveBeenCalled()
+      expect(optionGetStringSpy).not.toHaveBeenCalled()
+      expect(optionGetBooleanSpy).toHaveBeenCalledWith(argv, option)
+    })
+    it('gets false value from options if user explicilty sets it', async () => {
+      const value = false
+      const argv = {
+        $0: 'command',
+        _: ['non-option'],
+      }
+      const option = new Option({
+        key: 'foo',
+        value: {
+          description: 'hello world',
+        },
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const userExplicitlySetArgumentSpy = jest.spyOn(Base as any, 'userExplicitlySetArgument').mockReturnValue(true)
+      const configGetBooleanSpy = jest.spyOn(Config, 'getBoolean')
+      const optionGetStringSpy = jest.spyOn(Option, 'getStringValue')
+      const optionGetBooleanSpy = jest.spyOn(Option, 'getBooleanValue').mockReturnValue(value)
+
+      await expect(Base.getBooleanArgument(argv, option)).resolves.toEqual(value)
+
+      expect(userExplicitlySetArgumentSpy).toHaveBeenCalledWith(option)
+      expect(configGetBooleanSpy).not.toHaveBeenCalled()
+      expect(optionGetStringSpy).not.toHaveBeenCalled()
+      expect(optionGetBooleanSpy).toHaveBeenCalledWith(argv, option)
+    })
+    it('gets default true value if no explicit option or config', async () => {
+      const value = true
+      const argv = {
+        $0: 'command',
+        _: ['non-option'],
+      }
+      const option = new Option({
+        key: 'foo',
+        value: {
+          description: 'hello world',
+        },
+      })
+      const directory = 'dir'
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const userExplicitlySetArgumentSpy = jest.spyOn(Base as any, 'userExplicitlySetArgument').mockReturnValue(false)
+      const configGetBooleanSpy = jest.spyOn(Config, 'getBoolean').mockResolvedValue(undefined)
+      const optionGetStringSpy = jest.spyOn(Option, 'getStringValue').mockReturnValue(directory)
+      const optionGetBooleanSpy = jest.spyOn(Option, 'getBooleanValue').mockReturnValue(value)
+
+      await expect(Base.getBooleanArgument(argv, option)).resolves.toEqual(value)
+
+      expect(userExplicitlySetArgumentSpy).toHaveBeenCalledWith(option)
+      expect(configGetBooleanSpy).toHaveBeenCalledWith({
+        path: directory,
+        property: option.key,
+      })
+      expect(optionGetStringSpy).toHaveBeenCalledWith(argv, BaseOptions.Config)
+      expect(optionGetBooleanSpy).toHaveBeenCalledWith(argv, option)
+    })
+    it('gets true value from config if no explicit option but config', async () => {
+      const value = true
+      const argv = {
+        $0: 'command',
+        _: ['non-option'],
+      }
+      const option = new Option({
+        key: 'foo',
+        value: {
+          description: 'hello world',
+        },
+      })
+      const directory = 'dir'
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const userExplicitlySetArgumentSpy = jest.spyOn(Base as any, 'userExplicitlySetArgument').mockReturnValue(false)
+      const configGetBooleanSpy = jest.spyOn(Config, 'getBoolean').mockResolvedValue(value)
+      const optionGetStringSpy = jest.spyOn(Option, 'getStringValue').mockReturnValue(directory)
+      const optionGetBooleanSpy = jest.spyOn(Option, 'getBooleanValue')
+
+      await expect(Base.getBooleanArgument(argv, option)).resolves.toEqual(value)
+
+      expect(userExplicitlySetArgumentSpy).toHaveBeenCalledWith(option)
+      expect(configGetBooleanSpy).toHaveBeenCalledWith({
+        path: directory,
+        property: option.key,
+      })
+      expect(optionGetStringSpy).toHaveBeenCalledWith(argv, BaseOptions.Config)
+      expect(optionGetBooleanSpy).not.toHaveBeenCalled()
+    })
+    it('gets false value from config if no explicit option but config', async () => {
+      const value = true
+      const argv = {
+        $0: 'command',
+        _: ['non-option'],
+      }
+      const option = new Option({
+        key: 'foo',
+        value: {
+          description: 'hello world',
+        },
+      })
+      const directory = 'dir'
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const userExplicitlySetArgumentSpy = jest.spyOn(Base as any, 'userExplicitlySetArgument').mockReturnValue(false)
+      const configGetBooleanSpy = jest.spyOn(Config, 'getBoolean').mockResolvedValue(value)
+      const optionGetStringSpy = jest.spyOn(Option, 'getStringValue').mockReturnValue(directory)
+      const optionGetBooleanSpy = jest.spyOn(Option, 'getBooleanValue')
+
+      await expect(Base.getBooleanArgument(argv, option)).resolves.toEqual(value)
+
+      expect(userExplicitlySetArgumentSpy).toHaveBeenCalledWith(option)
+      expect(configGetBooleanSpy).toHaveBeenCalledWith({
+        path: directory,
+        property: option.key,
+      })
+      expect(optionGetStringSpy).toHaveBeenCalledWith(argv, BaseOptions.Config)
+      expect(optionGetBooleanSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('userExplicitlySetArgument', () => {
+    it('returns false if no options present in proccess argv', () => {
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js'])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-          },
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
@@ -239,36 +382,12 @@ describe('Base', () => {
             },
           })
         )
-      ).toBe(undefined)
+      ).toEqual(false)
     })
-    it('returns undefined if no boolean arguments match', () => {
+    it('returns false if option not present in proccess argv', () => {
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', 'bar'])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            foo: 'true',
-            bar: 2,
-            fiz: undefined,
-          },
-          new Option({
-            key: 'foo',
-            value: {
-              alias: ['bar', 'fiz'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(undefined)
-    })
-    it('returns true value if argument matches key without alias', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            foo: true,
-          },
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
@@ -276,191 +395,165 @@ describe('Base', () => {
             },
           })
         )
-      ).toBe(true)
+      ).toEqual(false)
     })
-    it('returns false value if argument matches key without alias', () => {
+    it('returns false if option key present without hyphens in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', key])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            foo: false,
-          },
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(false)
+    })
+    it('returns false if option key present with triple hyphen in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `---${key}`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(false)
+    })
+    it('returns false if option present within longer option in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `--food`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(false)
+    })
+    it('returns true if option key present with single hyphen and no value in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `-${key}`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(true)
+    })
+    it('returns true if option key present with double hyphen and no value in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `--${key}`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(true)
+    })
+    it('returns true if option key present with single hyphen and value in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `-${key}=test`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(true)
+    })
+    it('returns true if option key present with double hyphen and value in proccess argv', () => {
+      const key = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `--${key}=test`])
+      expect(
+        Base['userExplicitlySetArgument'](
+          new Option({
+            key,
+            value: {
+              description: 'hello world',
+            },
+          })
+        )
+      ).toEqual(true)
+    })
+    it('returns true if option alias present with single hyphen and no value in proccess argv', () => {
+      const alias = 'f'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `-${alias}`])
+      expect(
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
               description: 'hello world',
+              alias,
             },
           })
         )
-      ).toBe(false)
+      ).toEqual(true)
     })
-    it('returns true value if argument matches key with other aliases', () => {
+    it('returns true if option alias present with double hyphen and no value in proccess argv', () => {
+      const alias = 'f'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `--${alias}`])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            foo: true,
-          },
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
-              alias: ['fizz'],
               description: 'hello world',
+              alias,
             },
           })
         )
-      ).toBe(true)
+      ).toEqual(true)
     })
-    it('returns false value if argument matches key with other aliases', () => {
+    it('returns true if option alias present with single hyphen and value in proccess argv', () => {
+      const alias = 'foo'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `-${alias}=test`])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            foo: false,
-          },
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
-              alias: ['fizz'],
               description: 'hello world',
+              alias,
             },
           })
         )
-      ).toBe(false)
+      ).toEqual(true)
     })
-    it('returns true value if argument matches alias', () => {
+    it('returns true if option alias present with double hyphen and value in proccess argv', () => {
+      const alias = 'f'
+      jest.replaceProperty(process, 'argv', ['bin.js', 'test.js', `--${alias}=test`])
       expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: true,
-          },
+        Base['userExplicitlySetArgument'](
           new Option({
             key: 'foo',
             value: {
-              alias: ['fizz'],
               description: 'hello world',
+              alias,
             },
           })
         )
-      ).toBe(true)
-    })
-    it('returns false value if argument matches alias', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: false,
-          },
-          new Option({
-            key: 'foo',
-            value: {
-              alias: ['fizz'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(false)
-    })
-    it('returns key true value instead of alias value', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: false,
-            foo: true,
-          },
-          new Option({
-            key: 'foo',
-            value: {
-              alias: ['fizz'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(true)
-    })
-    it('returns key false value instead of alias value', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: true,
-            foo: false,
-          },
-          new Option({
-            key: 'foo',
-            value: {
-              alias: ['fizz'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(false)
-    })
-    it('returns second alias true value if multiple and no key', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: false,
-            foo: true,
-          },
-          new Option({
-            key: 'hello',
-            value: {
-              alias: ['fizz', 'foo'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(true)
-    })
-    it('returns second alias false value if multiple and no key', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: true,
-            foo: false,
-          },
-          new Option({
-            key: 'hello',
-            value: {
-              alias: ['fizz', 'foo'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(false)
-    })
-    it('returns second alias false value if multiple and option no key', () => {
-      expect(
-        Base.getBooleanArgument(
-          {
-            $0: 'command',
-            _: ['non-option'],
-            fizz: true,
-            foo: false,
-          },
-          new Option({
-            key: '',
-            value: {
-              alias: ['fizz', 'foo'],
-              description: 'hello world',
-            },
-          })
-        )
-      ).toBe(false)
+      ).toEqual(true)
     })
   })
 

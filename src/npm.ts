@@ -3,7 +3,15 @@ import { Arguments, CommandModule } from 'yargs'
 import Base, { BaseOptions, OutdatedDependencies } from './base'
 import executeAsync, { ExecuteResponse, instanceOfExecutionResponse } from './exec-async'
 
+/**
+ * Class for interacting with the Node Package Manager (NPM)
+ */
 export default class Npm extends Base {
+  /**
+   * Gets the command for use by the CLI
+   *
+   * @returns The command to be used by Yargs for CLI interpretation
+   */
   static getCommand(): CommandModule {
     return {
       command: ['npm'],
@@ -14,7 +22,7 @@ export default class Npm extends Base {
         const outdatedDependencies = await Npm.getOutdatedDependencies(directory)
         Npm.updatePackagesWithLatestVersion(packageJson, outdatedDependencies)
         await Npm.setPackageJson(directory, packageJson)
-        const install = Npm.getBooleanArgument(argv, BaseOptions.Install)
+        const install = await Npm.getBooleanArgument(argv, BaseOptions.Install)
         if (install && Object.keys(outdatedDependencies).length > 0) {
           await executeAsync({
             command: 'npm install',
@@ -24,6 +32,12 @@ export default class Npm extends Base {
     }
   }
 
+  /**
+   * Get package dependencies which have new versions available
+   *
+   * @param directory The directory containing package information
+   * @returns The dependencies which have a newer version available
+   */
   static async getOutdatedDependencies(directory: string): Promise<OutdatedDependencies> {
     let response: ExecuteResponse
     try {
