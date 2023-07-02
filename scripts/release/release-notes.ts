@@ -16,12 +16,12 @@ const notes: Release[] = [
   {
     version: '1.1.0',
     description: 'Configuration by file',
-    features: ['Allow configuration to be set in a file (#3). See [documentation](#configuration-file) for use.'],
+    features: ['Allow configuration to be set in a file (#6). See [documentation](#configuration-file) for use.'],
   },
   {
     version: '1.0.1',
     description: 'Update dependencies',
-    fixes: ['Update package dependencies (#2)'],
+    fixes: ['Update package dependencies (#5)'],
   },
   {
     version: '1.0.0',
