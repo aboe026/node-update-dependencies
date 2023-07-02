@@ -4,7 +4,7 @@ import path from 'path'
 import { runServer } from 'verdaccio'
 import { Server } from 'http'
 
-import config from './e2e-config'
+import env from './e2e-env'
 import executeAsync from '../../../src/exec-async'
 
 const userName = 'james.bond'
@@ -12,7 +12,7 @@ const userPassword = '007'
 
 export default class NpmRegistry {
   static readonly scope = '@node-update-dependencies-e2e-test'
-  static readonly port = process.env.E2E_NPM_REGISTRY_PORT || 4873
+  static readonly port = env.E2E_NPM_REGISTRY_PORT
   static readonly user = {
     name: 'james.bond',
     password: '007',
@@ -22,7 +22,7 @@ export default class NpmRegistry {
   private static app: Server
 
   static async start(): Promise<void> {
-    const storage = path.join(config.TEMP_WORK_DIR, 'registry')
+    const storage = path.join(env.E2E_TEMP_WORK_DIR, 'registry')
     const logFile = path.join(storage, 'verdaccio.log')
     await fs.ensureFile(logFile)
     if (!NpmRegistry.app) {
@@ -86,7 +86,7 @@ export default class NpmRegistry {
   }
 
   static async addPackage(name: string, version: string): Promise<void> {
-    const directory = path.join(config.TEMP_WORK_DIR, 'packages', name)
+    const directory = path.join(env.E2E_TEMP_WORK_DIR, 'packages', name)
     await fs.ensureDir(directory)
 
     // write package files

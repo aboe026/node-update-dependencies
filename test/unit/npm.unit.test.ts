@@ -32,7 +32,7 @@ describe('Npm', () => {
         const updatePackagesSpy = jest.spyOn(Npm, 'updatePackagesWithLatestVersion').mockImplementation()
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Npm, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockReturnValue(true)
+        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockResolvedValue(true)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Npm.getCommand().handler(argv)
@@ -75,7 +75,7 @@ describe('Npm', () => {
         const updatePackagesSpy = jest.spyOn(Npm, 'updatePackagesWithLatestVersion').mockImplementation()
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Npm, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockReturnValue(false)
+        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockResolvedValue(false)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Npm.getCommand().handler(argv)
@@ -111,7 +111,7 @@ describe('Npm', () => {
         const updatePackagesSpy = jest.spyOn(Npm, 'updatePackagesWithLatestVersion').mockImplementation()
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Npm, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockReturnValue(true)
+        const getBooleanArgumentSpy = jest.spyOn(Npm, 'getBooleanArgument').mockResolvedValue(true)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Npm.getCommand().handler(argv)

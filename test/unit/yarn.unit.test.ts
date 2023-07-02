@@ -42,7 +42,7 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(outdatedDependencies)
         const updatePackagesSpy = jest.spyOn(Yarn, 'updatePackagesWithLatestVersion').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Yarn, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockReturnValue(true)
+        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockResolvedValue(true)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Yarn.getCommand().handler(argv)
@@ -95,7 +95,7 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(outdatedDependencies)
         const updatePackagesSpy = jest.spyOn(Yarn, 'updatePackagesWithLatestVersion').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Yarn, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockReturnValue(false)
+        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockResolvedValue(false)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Yarn.getCommand().handler(argv)
@@ -141,7 +141,7 @@ describe('Yarn', () => {
           .mockResolvedValueOnce(outdatedDependencies)
         const updatePackagesSpy = jest.spyOn(Yarn, 'updatePackagesWithLatestVersion').mockImplementation()
         const setPackageJsonSpy = jest.spyOn(Yarn, 'setPackageJson').mockImplementation()
-        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockReturnValue(true)
+        const getBooleanArgumentSpy = jest.spyOn(Yarn, 'getBooleanArgument').mockResolvedValue(true)
         const executeAsnycSpy = jest.spyOn(executeAsync, 'default').mockImplementation()
 
         await Yarn.getCommand().handler(argv)

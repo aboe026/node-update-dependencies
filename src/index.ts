@@ -12,6 +12,7 @@ import { BaseOptions } from './base'
       .scriptName('update-dependencies')
       .command(Npm.getCommand())
       .command(Yarn.getCommand())
+      .option(BaseOptions.Config.key, BaseOptions.Config.value)
       .option(BaseOptions.Install.key, BaseOptions.Install.value).argv
   } catch (err: unknown) {
     console.error(err)

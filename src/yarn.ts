@@ -6,7 +6,15 @@ import Base, { PackageJson } from './base'
 import { BaseOptions, OutdatedDependencies } from './base'
 import executeAsync from './exec-async'
 
+/**
+ * Class for interacting with the Yarn package manager
+ */
 export default class Yarn extends Base {
+  /**
+   * Gets the command for use by the CLI
+   *
+   * @returns The command to be used by Yargs for CLI interpretation
+   */
   static getCommand(): CommandModule {
     return {
       command: ['yarn'],
@@ -25,7 +33,7 @@ export default class Yarn extends Base {
             await Yarn.setPackageJson(workspaceDirectory, packageJson)
           })
         )
-        const install = Yarn.getBooleanArgument(argv, BaseOptions.Install)
+        const install = await Yarn.getBooleanArgument(argv, BaseOptions.Install)
         if (install && outdatedDependenciesCount > 0) {
           await executeAsync({
             command: 'yarn install',
@@ -35,6 +43,12 @@ export default class Yarn extends Base {
     }
   }
 
+  /**
+   * Get list of Yarn workspaces for a project
+   *
+   * @param directory The directory containing the root worskpace for the Yarn project
+   * @returns The list of Yarn workspaces for the project
+   */
   static async getWorkspaces(directory: string): Promise<Workspace[]> {
     const workspaces: Workspace[] = []
     const { stdout } = await executeAsync({
@@ -53,6 +67,13 @@ export default class Yarn extends Base {
     return workspaces
   }
 
+  /**
+   * Get package dependencies which have new versions available
+   *
+   * @param packageJson The package.json of the workspace in the Yarn project
+   * @param directory The directory containing package information
+   * @returns The dependencies which have a newer version available
+   */
   static async getOutdatedDependencies(packageJson: PackageJson, directory: string): Promise<OutdatedDependencies> {
     const outdatedDependencies: OutdatedDependencies = {}
     let packages: { [key: string]: string } = {}
@@ -91,6 +112,13 @@ export default class Yarn extends Base {
     return outdatedDependencies
   }
 
+  /**
+   * Get the latest version avaliable for a package
+   *
+   * @param packageName The name of the package to get the latest version of
+   * @param directory The directory containing the package's package.json listing
+   * @returns The latest version available for the package
+   */
   static async getLatestVersion(packageName: string, directory: string): Promise<string> {
     const response = await executeAsync({
       command: `yarn npm info ${packageName} --json --fields version`,
@@ -110,6 +138,8 @@ export default class Yarn extends Base {
 }
 
 export interface Workspace {
+  /** The name of the Workspace */
   name: string
+  /** The path of the Workspace relative to the root Workspace for the project */
   location: string
 }
